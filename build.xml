@@ -122,8 +122,8 @@ Notes:
     </target>
 
     <target name="start" depends="install">
-        <echo message="app start introsde.document.endpoint.PeoplePublisher in ${build.dir}"/>
-        <java classname="introsde.document.endpoint.PeoplePublisher" classpath="${build.dir}" fork="true">
+        <echo message="app start introsde.assignment.server.PeoplePublisher in ${build.dir}"/>
+        <java classname="introsde.assignment.server.PeoplePublisher" classpath="${build.dir}" fork="true">
             <arg value="$JAVA_OPTS  -cp"/>
             <classpath>
                 <path location="build"/>
