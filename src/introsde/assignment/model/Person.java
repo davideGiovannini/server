@@ -31,7 +31,7 @@ public class Person {
     @Id
     @GeneratedValue(generator = "sqlite_person")
     @TableGenerator(name = "sqlite_person")
-    private int personId;
+    private long personId;
 
 
     @XmlTransient

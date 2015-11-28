@@ -83,6 +83,9 @@ public class Measurement {
         return result;
     }
 
+    public static Measurement findMeasurement(Measurement measure){
+        return findMeasurement(measure.getMid(), measure.getMeasureType());
+    }
 
     public static Measurement findMeasurement(long mid, String type) {
         EntityManager em = LifeCoachDao.instance.createEntityManager();

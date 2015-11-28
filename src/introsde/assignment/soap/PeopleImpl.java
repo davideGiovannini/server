@@ -28,8 +28,8 @@ public class PeopleImpl implements People {
 
     @Override
     public void updatePerson(Person person) {
-        //TODO where to get ID ?
-        long id = 0;
+        //TODO check it is working
+        long id = person.getPersonId();
         System.out.println("--> Updating Person... " + id);
         System.out.println("--> " + person.toString());
 
@@ -98,7 +98,6 @@ public class PeopleImpl implements People {
         System.out.println("Posting new measure");
         Person person = Person.getPersonById(id);
         if (person != null) {
-            // TODO fix this line => new model that measure knows about its type
             measure.setPersonId(person);
             Measurement ret = LifeCoachDao.saveEntity(measure);
             return ret;
@@ -112,8 +111,7 @@ public class PeopleImpl implements People {
         Person person = Person.getPersonById(id);
         if (person != null) {
 
-            //TODO type is inside measurebean now also mid apparently
-            Measurement existing = Measurement.findMeasurement(0, "TODO");
+            Measurement existing = Measurement.findMeasurement(measure);
 
             if (existing != null) {
                 existing.setMeasureValue(measure.getMeasureValue());// TODO merge function
