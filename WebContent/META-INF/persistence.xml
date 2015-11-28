@@ -5,8 +5,8 @@
              xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="lifecoach-JPA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <class>com.unitn.isde.model.Person</class>
-        <class>com.unitn.isde.model.Measurement</class>
+        <class>introsde.assignment.model.Person</class>
+        <class>introsde.assignment.model.Measurement</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
             <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:lifecoach.sqlite" />
