@@ -30,7 +30,7 @@
         <!-- JAX-WS bundle dependency -->
         <dependency org="com.sun.xml.ws" name="jaxws-rt" rev="2.2.8"/>
 
-        <!--<dependency org="javax" name="javaee-api" rev="7.0"/>-->
+        <dependency org="javax" name="javaee-api" rev="7.0"/>
         <!--<dependency org="javax.ejb" name="javax.ejb-api" rev="3.2"/>-->
 
         <dependency org="org.xerial" name="sqlite-jdbc" rev="3.7.2"/>
