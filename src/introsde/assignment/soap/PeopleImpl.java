@@ -3,7 +3,6 @@ package introsde.assignment.soap;
 import introsde.assignment.dao.LifeCoachDao;
 import introsde.assignment.model.Measurement;
 import introsde.assignment.model.Person;
-import introsde.assignment.model.presentation.*;
 
 import javax.jws.WebService;
 import javax.xml.ws.Response;
@@ -17,18 +16,18 @@ import java.util.List;
         serviceName = "PeopleService")
 public class PeopleImpl implements People {
     @Override
-    public PersonList readPersonList() {
+    public List<Person> readPersonList() {
         System.out.println("Getting list of people...");
-        return new PersonList(Person.getAll());
+        return Person.getAll();
     }
 
     @Override
-    public PersonBean readPerson(Long id) {
-        return PersonBean.from(Person.getPersonById(id));
+    public Person readPerson(Long id) {
+        return Person.getPersonById(id);
     }
 
     @Override
-    public void updatePerson(PersonBean person) {
+    public void updatePerson(Person person) {
         //TODO where to get ID ?
         long id = 0;
         System.out.println("--> Updating Person... " + id);
@@ -46,17 +45,18 @@ public class PeopleImpl implements People {
     }
 
     @Override
-    public PersonBean createPerson(PersonBean person) {
+    public Person createPerson(Person person) {
         System.out.println("Creating new person...123");
-        Person personDb = person.toDb();
-        List<Measurement> history = new ArrayList<>(person.getHProfile().size());
 
-        for (CurrentMeasureBean m : person.getHProfile()) {
-            history.add(m.toDb(personDb));
+        List<Measurement> history = new ArrayList<>(person.getHealthProfileTransient().size());
+
+        for (Measurement m : person.getHealthProfileTransient()) {
+            m.setPersonId(person);
+            history.add(m);
         }
-        personDb.setHistory(history);
+        person.setHistory(history);
 
-        return PersonBean.from(LifeCoachDao.saveEntity(personDb));
+        return LifeCoachDao.saveEntity(person);
 
     }
 
@@ -72,42 +72,42 @@ public class PeopleImpl implements People {
     }
 
     @Override
-    public MeasureHistory readPersonHistory(Long id, String measureType) {
+    public List<Measurement> readPersonHistory(Long id, String measureType) {
 
         Person person = Person.getPersonById(id);
         if (person != null) {
-
-            return new MeasureHistory(Measurement.getHistoryOf(person, measureType));
+            return Measurement.getHistoryOf(person, measureType);
         }
         return null;
     }
 
     @Override
-    public TypesList readMeasureTypes() {
+    public List<String> readMeasureTypes() {
         List<String> measures = Measurement.getTypes();
-        return new TypesList(measures);
+        return measures;
     }
 
     @Override
-    public MeasureBean readPersonMeasure(Long id, String measureType, Long mid) {
+    public Measurement readPersonMeasure(Long id, String measureType, Long mid) {
         // TODO check that mid belongs to id ?
-        return MeasureBean.from(Measurement.findMeasurement(mid, measureType));
+        return Measurement.findMeasurement(mid, measureType);
     }
 
     @Override
-    public MeasureBean savePersonMeasure(Long id, MeasureBean measure) {
+    public Measurement savePersonMeasure(Long id, Measurement measure) {
         System.out.println("Posting new measure");
         Person person = Person.getPersonById(id);
         if (person != null) {
             // TODO fix this line => new model that measure knows about its type
-            Measurement ret = LifeCoachDao.saveEntity(measure.toDb("todo", person));
-            return MeasureBean.from(ret);
+            measure.setPersonId(person);
+            Measurement ret = LifeCoachDao.saveEntity(measure);
+            return ret;
         }
         return null;
     }
 
     @Override
-    public void updatePersonMeasure(Long id, MeasureBean measure) {
+    public void updatePersonMeasure(Long id, Measurement measure) {
         System.out.println("Updating new measure");
         Person person = Person.getPersonById(id);
         if (person != null) {
@@ -116,7 +116,7 @@ public class PeopleImpl implements People {
             Measurement existing = Measurement.findMeasurement(0, "TODO");
 
             if (existing != null) {
-                existing.setValue(measure.getValue());// TODO merge function
+                existing.setMeasureValue(measure.getMeasureValue());// TODO merge function
 
                 LifeCoachDao.updateEntity(existing);
             }

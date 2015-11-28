@@ -1,13 +1,12 @@
 package introsde.assignment.model;
 
 import introsde.assignment.dao.LifeCoachDao;
-import introsde.assignment.model.presentation.PersonBean;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +17,9 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@XmlRootElement(name = "person")
+@XmlType(propOrder = {"personId","firstname", "lastname", "birthdate", "healthProfile"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person {
     private String firstname;
     private String lastname;
@@ -32,8 +34,29 @@ public class Person {
     private int personId;
 
 
+    @XmlTransient
     @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Measurement> history;
+
+
+    @Transient
+    @XmlTransient
+    private List<Measurement> healthProfile;
+
+    @XmlElementWrapper(name = "healthProfile")
+    @XmlElement(name = "measureType")
+    public List<Measurement> getHealthProfile(){
+        healthProfile = Measurement.getHealthProfileOf(this);
+        return  healthProfile;
+    }
+
+    public void setHealthStatus(List<Measurement> hprofile){
+        healthProfile = hprofile;
+    }
+
+    public List<Measurement> getHealthProfileTransient(){
+        return healthProfile;
+    }
 
 
     public Person(String firstname, String lastname, Date birthdate) {
@@ -49,7 +72,7 @@ public class Person {
         this.history = new ArrayList<>(5);
     }
 
-    public void mergeWith(PersonBean personBean){
+    public void mergeWith(Person personBean){
         if (personBean.getFirstname() != null) {
             firstname = personBean.getFirstname();
         }
@@ -71,47 +94,12 @@ public class Person {
         return p;
     }
 
-    public static List<PersonBean> getAll() {
+    public static List<Person> getAll() {
         EntityManager em = LifeCoachDao.instance.createEntityManager();
         List<Person> list = em.createNamedQuery("Person.findAll", Person.class)
                 .getResultList();
         LifeCoachDao.instance.closeConnections(em);
 
-
-        List<PersonBean> result = new ArrayList<>(list.size());
-        for(Person person: list){
-            result.add(PersonBean.from(person));
-        }
-        return result;
-    }
-
-
-    public static List<PersonBean> getAllThatMatch(@NotNull String type, Integer min, Integer max) {
-        EntityManager em = LifeCoachDao.instance.createEntityManager();
-        Query query;
-        if(min != null && max != null) {
-            query = em.createQuery("select m.personId from Measurement m WHERE m.value > :min and m.value < :max and m.measure = :type GROUP BY m.personId ORDER BY m.created")
-            .setParameter("type", type).setParameter("min", min).setParameter("max", max);
-        }else if(min != null){
-            query = em.createQuery("select m.personId from Measurement m WHERE m.value > :min and m.measure = :type GROUP BY m.personId ORDER BY m.created")
-                    .setParameter("type", type).setParameter("min", min);
-        }else if (max != null){
-            query = em.createQuery("select m.personId from Measurement m WHERE m.value < :max and m.measure = :type GROUP BY m.personId ORDER BY m.created")
-                    .setParameter("type", type).setParameter("max", max);
-        }else{
-            //Should never reach this statement
-            System.err.println("Person.getAllThatMatch: Both min and max were null!");
-            return null;
-        }
-
-
-        List<Person> list = query.getResultList();
-        LifeCoachDao.instance.closeConnections(em);
-
-        List<PersonBean> result = new ArrayList<>(list.size());
-        for(Person person: list){
-            result.add(PersonBean.from(person));
-        }
-        return result;
+        return list;
     }
 }
