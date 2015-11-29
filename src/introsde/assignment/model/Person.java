@@ -50,9 +50,6 @@ public class Person {
         return  healthProfile;
     }
 
-    public void setHealthStatus(List<Measurement> hprofile){
-        healthProfile = hprofile;
-    }
 
     public List<Measurement> getHealthProfileTransient(){
         return healthProfile;
