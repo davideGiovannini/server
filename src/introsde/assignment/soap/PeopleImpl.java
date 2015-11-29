@@ -31,7 +31,7 @@ public class PeopleImpl implements People {
         //TODO check it is working
         long id = person.getPersonId();
         System.out.println("--> Updating Person... " + id);
-        System.out.println("--> " + person.toString());
+
 
         Response res;
         Person existing = Person.getPersonById(id);
@@ -106,7 +106,7 @@ public class PeopleImpl implements People {
     }
 
     @Override
-    public void updatePersonMeasure(Long id, Measurement measure) {
+    public Measurement updatePersonMeasure(Long id, Measurement measure) {
         System.out.println("Updating new measure");
         Person person = Person.getPersonById(id);
         if (person != null) {
@@ -116,8 +116,9 @@ public class PeopleImpl implements People {
             if (existing != null) {
                 existing.setMeasureValue(measure.getMeasureValue());// TODO merge function
 
-                LifeCoachDao.updateEntity(existing);
+                return LifeCoachDao.updateEntity(existing);
             }
         }
+        return  null;
     }
 }

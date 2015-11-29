@@ -16,7 +16,6 @@ import java.util.List;
 @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
 @Getter
 @Setter
-@ToString
 @XmlRootElement(name = "person")
 @XmlType(propOrder = {"personId","firstname", "lastname", "birthdate", "healthProfile"})
 @XmlAccessorType(XmlAccessType.FIELD)

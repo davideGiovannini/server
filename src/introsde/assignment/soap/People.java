@@ -55,5 +55,5 @@ public interface People {
 
     @WebMethod()
     @WebResult()
-    void updatePersonMeasure(Long id, Measurement m); // Measure | should update the measure identified with {m.mid}, related to the Person identified by {id}
+    Measurement updatePersonMeasure(Long id, Measurement m); // Measure | should update the measure identified with {m.mid}, related to the Person identified by {id}
 }
