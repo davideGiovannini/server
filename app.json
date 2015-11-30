@@ -1,0 +1,12 @@
+{
+  "name": "Getting Started with Java on Heroku",
+  "description": "A barebones Java app, which can easily be deployed to Heroku.",
+  "image": "heroku/java",
+  "env": {
+      "BUILDPACK_URL": "https://github.com/IntroSDE/heroku-buildpack-ant.git",
+      "HEROKU_URL": {
+        "description": "The URL of this Heroku app.",
+        "value": "http://isde-lifecoach.herokuapp.com"
+      }
+
+}
