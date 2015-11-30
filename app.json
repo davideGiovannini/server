@@ -1,5 +1,5 @@
 {
-  "name": "Getting Started with Java on Heroku",
+  "name": Introsde assignment 3 server,
   "description": "A barebones Java app, which can easily be deployed to Heroku.",
   "image": "heroku/java",
   "env": {
